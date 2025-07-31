@@ -1,11 +1,11 @@
 # CPI Tagging App
 
-Aplikasi web sederhana berbasis Flask untuk memproses gambar dengan menambahkan ID, tanggal/waktu, dan informasi OCR (Optical Character Recognition) yang diekstraksi. Gambar yang telah diproses kemudian dapat diunduh secara otomatis.
+Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot pengecekan carrier via Decimator. Tag yang diberikan berupa logo PSN, ID, Tanggal/Jam (WIB), dan nilai C/N & CPI yang di extract dari screenshoot tersebut. Screenshot yang sudah diproses akan terdownload secara otomatis.
 
 ## Daftar Isi
 
 * [Fitur](#fitur)
-* [Tumpukan Teknologi](#tumpukan-teknologi)
+* [Technology Stack](#technology-stack)
 * [Struktur Proyek](#struktur-proyek)
 * [Persyaratan Font](#persyaratan-font)
 * [Pengaturan & Jalankan Secara Lokal](#pengaturan--jalankan-secara-lokal)
@@ -17,12 +17,12 @@ Aplikasi web sederhana berbasis Flask untuk memproses gambar dengan menambahkan 
 
 ## Fitur
 
-* **Unggah Gambar Fleksibel**: Mendukung unggah gambar melalui:
+* **Upload Screenshoot Fleksibel**: Mendukung upload melalui:
     * Klik tombol "Browse".
-    * Seret dan lepas (Drag & Drop) ke seluruh halaman web.
-    * Tempel (Paste) gambar langsung dari clipboard.
+    * Drag & Drop pada seluruh halaman web.
+    * Paste langsung dari clipboard.
 * **Input ID Otomatis/Manual**:
-    * Mendukung tempel (paste) teks ID langsung ke halaman web (akan otomatis mengisi kolom ID).
+    * Paste teks ID langsung ke halaman web (akan otomatis mengisi kolom ID).
     * Memformat ID secara otomatis ke huruf kapital dan menghilangkan spasi (baik di frontend maupun backend).
     * Fokus otomatis ke kolom ID dan hapus satu karakter saat `Backspace` ditekan di luar input.
     * Reset formulir dengan menekan `Esc`.
@@ -38,19 +38,19 @@ Aplikasi web sederhana berbasis Flask untuk memproses gambar dengan menambahkan 
 * **Nama File Unduhan Otomatis**: Hasil gambar diunduh dengan nama file yang diformat sebagai `ID_DD Bulan YYYY.png`.
 * **Pengukuran Waktu Proses**: Menampilkan waktu yang dibutuhkan untuk memproses gambar (termasuk upload, pemrosesan server, dan download).
 
-## Tumpukan Teknologi
+## Technology Stack
 
 * **Backend**: Python, Flask, Gunicorn
-* **Manipulasi Gambar**: Pillow (PIL)
-* **OCR**: Pytesseract (dengan mesin Tesseract OCR)
+* **Image Processing**: Pillow (PIL)
+* **OCR**: Pytesseract (with OCR Tesseract machine)
 * **Deployment**: Nginx
 * **Frontend**: HTML5, CSS3, JavaScript
-* **Pengelolaan Dependensi**: `pip`, `venv`
+* **Dependency Management**: `pip`, `venv`
 
 ## Struktur Proyek
 
-cpi-tagging-app/
-├── app.py                  # Aplikasi Flask utama (backend)
+cpi-tagging-app/ \n
+├── app.py                  # Aplikasi Flask utama (backend) /n
 ├── requirements.txt        # Daftar dependensi Python
 ├── static/                 # File statis (CSS, gambar logo, font)
 │   ├── style.css           # Styling CSS
