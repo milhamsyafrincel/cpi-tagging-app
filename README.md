@@ -6,7 +6,7 @@ Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot (i
 
 * [Fitur](#fitur)
 * [Technology Stack](#technology-stack)
-* [Struktur Proyek](#project-structure)
+* [Project Structure](#project-structure)
 * [Persyaratan Font](#persyaratan-font)
 * [Pengaturan & Jalankan Secara Lokal](#pengaturan--jalankan-secara-lokal)
 * [Deployment di Ubuntu 20.04](#deployment-di-ubuntu-2004)
@@ -43,15 +43,16 @@ Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot (i
 * **Dependency Management**: `pip`, `venv`
 
 ## Project Structure
-
+```
 cpi-tagging-app/
-├── app.py                     # Aplikasi Flask utama (backend)
-├── requirements.txt           # Daftar dependensi Python
-├── static/                    # File statis (CSS, gambar logo, font)
-│   ├── style.css              # Styling CSS
-│   ├── logo_psn.png           # File logo
-│   ├── ARIAL.TTF              # Font Arial Reguler
-│   ├── ARIALBD.TTF            # Font Arial Bold
-│   └── ARIALIT.TTF            # Font Arial Italic (Saya asumsikan ini yang dimaksud, bukan ARIAUIT.TTF)
-└── templates/                 # Template HTML
-    └── index.html             # Halaman utama aplikasi
+├── app.py                     
+├── requirements.txt           
+├── static/                    
+│   ├── style.css              
+│   ├── logo_psn.png           
+│   ├── ARIAL.TTF              
+│   ├── ARIALBD.TTF            
+│   └── ARIALIT.TTF            
+└── templates/                 
+    └── index.html             
+```
