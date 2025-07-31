@@ -82,6 +82,8 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
 6. **Clone Project** 
     ```bash
     git clone https://github.com/milhamsyafrincel/cpi-tagging-app.git
+    sudo chown -R $USER:$USER /var/www/cpi-tagging-app
+    cd /var/www/cpi-tagging-app
     ```
 7. **Buat dan Aktifkan Virtual Environment:**
     ```bash
@@ -107,7 +109,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     [Service]
     User=your_username
     Group=www-data                
-    WorkingDirectory=/var/www/cpi-tagging_app
+    WorkingDirectory=/var/www/cpi-tagging-app
     ExecStart=/var/www/cpi-tagging-app/venv/bin/gunicorn --workers 3 --bind unix:/var/www/cpi-tagging-app/cpi-tagging-app.sock -m 007 app:app
     Restart=always
     StandardOutput=syslog
