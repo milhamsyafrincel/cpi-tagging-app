@@ -7,11 +7,8 @@ Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot (i
 * [Fitur](#fitur)
 * [Technology Stack](#technology-stack)
 * [Project Structure](#project-structure)
-* [Persyaratan Font](#persyaratan-font)
-* [Pengaturan & Jalankan Secara Lokal](#pengaturan--jalankan-secara-lokal)
-* [Deployment di Ubuntu 20.04](#deployment-di-ubuntu-2004)
-* [Batasan Diketahui & Peningkatan di Masa Depan](#batasan-diketahui--peningkatan-di-masa-depan)
-* [Lisensi](#lisensi)
+* [Step Guidance](#step-guidance)
+* [Batasan](#batasan)
 
 ---
 
@@ -27,10 +24,10 @@ Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot (i
     * Paste langsung dari clipboard.
 * **Preview Image**: Menampilkan image yang di upload di sisi kanan layar.
 * **Delete Image Mudah**:Tekan tombol `Esc` dimanapun akan menghapus image yang sudah di-upload.
-* **Penambahan Metadata ke Gambar**:
+* **Penambahan Metadata ke Image**:
     * Menambahkan ID yang dimasukkan.
     * Menambahkan tanggal dan waktu saat ini (WIB) ke gambar.
-    * Menambahkan nilai C/N dan CPI yang diekstraksi melalui OCR (Optical Character Recognition) dari area tertentu pada gambar.
+    * Menambahkan nilai C/N dan CPI yang diekstraksi melalui OCR (Optical Character Recognition) dari area tertentu pada image.
 * **Rename File Otomatis**: Download hasil image dengan nama file yang diformat sebagai `ID_DD Bulan YYYY.png`
 
 ## Technology Stack
@@ -56,3 +53,134 @@ cpi-tagging-app/
 └── templates/                 
     └── index.html             
 ```
+
+## Step Guidance
+
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untuk pengembangan dan pengujian).
+
+1.  **Update Sistem**
+    ```bash
+    sudo apt update
+    sudo apt upgrade -y
+    ```
+2. **Install Python, pip, dan virtualenv**
+    ```bash
+    sudo apt install python3-pip python3-venv -y
+    ```
+3. **Install Tesseract OCR (OCR Machine, not Python Library)**
+    ```
+    sudo apt install tesseract-ocr -y
+    ```
+4. **Install Nginx:**
+    ```bash
+    sudo apt install nginx -y
+    ```
+5. **Install Gunicorn: WSGI server untuk running aplikasi Flask**
+    ```bash
+    pip install gunicorn
+    ```
+6. **Buat file directory**
+    ```bash
+    sudo mkdir -p /var/www/cpi_tagging_app
+    sudo chown -R $USER:$USER /var/www/cpi_tagging_app
+    cd /var/www/cpi_tagging_app
+    ```
+7. **Clone Project** 
+    ```bash
+    git clone [https://github.com/milhamsyafrincel/cpi-tagging-app.git]
+    ```
+8. **Buat dan Aktifkan Virtual Environment:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+9. **Install Python Dependecies**
+    ```bash
+    pip install -r requirements.txt
+    ```
+10. **Konfigurasi Gunicorn**
+    Buat service `systemd`
+    ```bash
+    sudo nano /etc/systemd/system/cpi_tagging_app.service
+    ```
+
+    Isi dengan content berikut
+    ```
+    [Unit]
+    Description=Gunicorn instance to serve CPI Tagging App
+    After=network.target
+
+    [Service]
+    User=your_username
+    Group=www-data                
+    WorkingDirectory=/var/www/cpi_tagging_app
+    ExecStart=/var/www/cpi_tagging_app/venv/bin/gunicorn --workers 3 --bind unix:/var/www/cpi_tagging_app/cpi_tagging_app.sock -m 007 app:app
+    Restart=always
+    StandardOutput=syslog
+    StandardError=syslog
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+    Note: Isi `your_username` dengan username computer
+
+    Reload, aktifkan, dan start service `systemd`
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl start cpi_tagging_app
+    sudo systemctl enable cpi_tagging_app
+    ```
+
+11. **Konfigurasi Nginx (Reverse Proxy)**
+    Buat file konfigurasi Nginx
+    ```bash
+    sudo nano /etc/nginx/sites-available/cpi_tagging_app
+    ```
+
+    Isi dengan content berikut
+    ```
+    server {
+       listen 80;
+       
+       location / {
+           include proxy_params;
+           proxy_pass http://unix:/var/www/cpi_tagging_app/cpi_tagging_app.sock;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_set_header Host $http_host;
+           proxy_redirect off;
+
+           # Pengaturan timeout untuk proses yang lama
+           proxy_connect_timeout 600s;
+           proxy_send_timeout 600s;
+           proxy_read_timeout 600s;
+           send_timeout 600s;
+       }
+
+       location /static {
+           alias /var/www/cpi_tagging_app/static; # Serve file statis langsung dari Nginx
+       }
+    }
+    ```
+
+    Aktifkan Nginx
+    ```bash
+    sudo ln -s /etc/nginx/sites-available/cpi_tagging_app /etc/nginx/sites-enabled
+    ```
+
+    Uji Confgi Nginx dan restart
+    ```bash
+    sudo nginx -t
+    sudo systemctl restart nginx
+    ```
+12. **Konfigurasi Firewall (UFW)**
+    Izinkan traffic HTTP
+    ```bash
+    sudo ufw allow 'Nginx HTTP'
+    sudo ufw enable # Aktifkan UFW jika belum aktif
+    ```
+ 
+## Batasan 
+
+* **Kinerja OCR**: Saat ini, OCR menggunakan Region of Interest (ROI) tetap, yang mungkin tidak konsisten pada semua gambar.
