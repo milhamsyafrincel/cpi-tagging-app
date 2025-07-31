@@ -49,8 +49,8 @@ Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot pe
 
 ## Struktur Proyek
 
-cpi-tagging-app/ \n
-├── app.py                  # Aplikasi Flask utama (backend) /n
+cpi-tagging-app/
+├── app.py                  # Aplikasi Flask utama (backend) 
 ├── requirements.txt        # Daftar dependensi Python
 ├── static/                 # File statis (CSS, gambar logo, font)
 │   ├── style.css           # Styling CSS
