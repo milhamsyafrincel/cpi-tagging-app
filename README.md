@@ -15,18 +15,18 @@ Aplikasi Web simple berbasis Flask untuk memberikan Tag pada hasil screenshot (i
 ## Fitur
 
 * **Input ID Otomatis/Manual**:
-    * Paste teks ID langsung ke halaman web (akan otomatis mengisi kolom ID).
+    * Paste ID langsung dimanapun pada halaman web (akan otomatis mengisi kolom ID).
     * Memformat ID secara otomatis ke huruf kapital dan menghilangkan spasi.
     * Tekan tombol `Backspace` dimanapun akan menghapus 1 karakter pada kolom ID.
 * **Upload Image Fleksibel**: Mendukung upload melalui:
     * Klik tombol "Browse".
-    * Drag & Drop pada seluruh halaman web.
+    * Drag & Drop dimanapun pada seluruh halaman web.
     * Paste langsung dari clipboard.
 * **Preview Image**: Menampilkan image yang di upload di sisi kanan layar.
 * **Delete Image Mudah**:Tekan tombol `Esc` dimanapun akan menghapus image yang sudah di-upload.
 * **Penambahan Metadata ke Image**:
     * Menambahkan ID yang dimasukkan.
-    * Menambahkan tanggal dan waktu saat ini (WIB) ke gambar.
+    * Menambahkan tanggal dan waktu saat ini (WIB) ke image.
     * Menambahkan nilai C/N dan CPI yang diekstraksi melalui OCR (Optical Character Recognition) dari area tertentu pada image.
 * **Rename File Otomatis**: Download hasil image dengan nama file yang diformat sebagai `ID_DD Bulan YYYY.png`
 
@@ -71,34 +71,38 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     ```
     sudo apt install tesseract-ocr -y
     ```
-4. **Install Nginx:**
+4. **Install Git**
+   ```bash
+   sudo apt install git -y
+   ```
+5. **Install Nginx:**
     ```bash
     sudo apt install nginx -y
     ```
-5. **Install Gunicorn: WSGI server untuk running aplikasi Flask**
+6. **Install Gunicorn: WSGI server untuk running aplikasi Flask**
     ```bash
     pip install gunicorn
     ```
-6. **Buat file directory**
+7. **Buat file directory**
     ```bash
     sudo mkdir -p /var/www/cpi_tagging_app
     sudo chown -R $USER:$USER /var/www/cpi_tagging_app
     cd /var/www/cpi_tagging_app
     ```
-7. **Clone Project** 
+8. **Clone Project** 
     ```bash
     git clone [https://github.com/milhamsyafrincel/cpi-tagging-app.git]
     ```
-8. **Buat dan Aktifkan Virtual Environment:**
+9. **Buat dan Aktifkan Virtual Environment:**
     ```bash
     python3 -m venv venv
     source venv/bin/activate
     ```
-9. **Install Python Dependecies**
+10. **Install Python Dependecies**
     ```bash
     pip install -r requirements.txt
     ```
-10. **Konfigurasi Gunicorn**
+11. **Konfigurasi Gunicorn**
     Buat service `systemd`
     ```bash
     sudo nano /etc/systemd/system/cpi_tagging_app.service
@@ -132,7 +136,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     sudo systemctl enable cpi_tagging_app
     ```
 
-11. **Konfigurasi Nginx (Reverse Proxy)**
+12. **Konfigurasi Nginx (Reverse Proxy)**
     Buat file konfigurasi Nginx
     ```bash
     sudo nano /etc/nginx/sites-available/cpi_tagging_app
@@ -174,7 +178,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     sudo nginx -t
     sudo systemctl restart nginx
     ```
-12. **Konfigurasi Firewall (UFW)**
+13. **Konfigurasi Firewall (UFW)**
     Izinkan traffic HTTP
     ```bash
     sudo ufw allow 'Nginx HTTP'
