@@ -71,41 +71,31 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     ```
     sudo apt install tesseract-ocr -y
     ```
-4. **Install Git**
-   ```bash
-   sudo apt install git -y
-   ```
-5. **Install Nginx:**
+4. **Install Nginx:**
     ```bash
     sudo apt install nginx -y
     ```
-6. **Install Gunicorn: WSGI server untuk running aplikasi Flask**
+5. **Go to directgory `/var/www/`**
     ```bash
-    pip install gunicorn
+    cd /var/www/
     ```
-7. **Buat file directory**
+6. **Clone Project** 
     ```bash
-    sudo mkdir -p /var/www/cpi_tagging_app
-    sudo chown -R $USER:$USER /var/www/cpi_tagging_app
-    cd /var/www/cpi_tagging_app
+    git clone https://github.com/milhamsyafrincel/cpi-tagging-app.git
     ```
-8. **Clone Project** 
-    ```bash
-    git clone [https://github.com/milhamsyafrincel/cpi-tagging-app.git]
-    ```
-9. **Buat dan Aktifkan Virtual Environment:**
+7. **Buat dan Aktifkan Virtual Environment:**
     ```bash
     python3 -m venv venv
     source venv/bin/activate
     ```
-10. **Install Python Dependecies**
+8. **Install Python Dependecies**
     ```bash
     pip install -r requirements.txt
     ```
-11. **Konfigurasi Gunicorn**
+9. **Konfigurasi Gunicorn**
     Buat service `systemd`
     ```bash
-    sudo nano /etc/systemd/system/cpi_tagging_app.service
+    sudo nano /etc/systemd/system/cpi-tagging-app.service
     ```
 
     Isi dengan content berikut
@@ -117,8 +107,8 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     [Service]
     User=your_username
     Group=www-data                
-    WorkingDirectory=/var/www/cpi_tagging_app
-    ExecStart=/var/www/cpi_tagging_app/venv/bin/gunicorn --workers 3 --bind unix:/var/www/cpi_tagging_app/cpi_tagging_app.sock -m 007 app:app
+    WorkingDirectory=/var/www/cpi-tagging_app
+    ExecStart=/var/www/cpi-tagging-app/venv/bin/gunicorn --workers 3 --bind unix:/var/www/cpi-tagging-app/cpi-tagging-app.sock -m 007 app:app
     Restart=always
     StandardOutput=syslog
     StandardError=syslog
@@ -132,14 +122,14 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     Reload, aktifkan, dan start service `systemd`
     ```bash
     sudo systemctl daemon-reload
-    sudo systemctl start cpi_tagging_app
-    sudo systemctl enable cpi_tagging_app
+    sudo systemctl start cpi-tagging-app
+    sudo systemctl enable cpi-tagging-app
     ```
 
-12. **Konfigurasi Nginx (Reverse Proxy)**
+10. **Konfigurasi Nginx (Reverse Proxy)**
     Buat file konfigurasi Nginx
     ```bash
-    sudo nano /etc/nginx/sites-available/cpi_tagging_app
+    sudo nano /etc/nginx/sites-available/cpi-tagging-app
     ```
 
     Isi dengan content berikut
@@ -149,7 +139,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
        
        location / {
            include proxy_params;
-           proxy_pass http://unix:/var/www/cpi_tagging_app/cpi_tagging_app.sock;
+           proxy_pass http://unix:/var/www/cpi-tagging-app/cpi-tagging-app.sock;
            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
            proxy_set_header X-Forwarded-Proto $scheme;
            proxy_set_header Host $http_host;
@@ -163,14 +153,14 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
        }
 
        location /static {
-           alias /var/www/cpi_tagging_app/static; # Serve file statis langsung dari Nginx
+           alias /var/www/cpi-tagging-app/static; # Serve file statis langsung dari Nginx
        }
     }
     ```
 
     Aktifkan Nginx
     ```bash
-    sudo ln -s /etc/nginx/sites-available/cpi_tagging_app /etc/nginx/sites-enabled
+    sudo ln -s /etc/nginx/sites-available/cpi-tagging-app /etc/nginx/sites-enabled
     ```
 
     Uji Confgi Nginx dan restart
@@ -178,7 +168,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (untu
     sudo nginx -t
     sudo systemctl restart nginx
     ```
-13. **Konfigurasi Firewall (UFW)**
+11. **Konfigurasi Firewall (UFW)**
     Izinkan traffic HTTP
     ```bash
     sudo ufw allow 'Nginx HTTP'
